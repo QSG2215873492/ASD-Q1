@@ -7,37 +7,80 @@
 //
 
 #include <iostream>
+#include <fstream>
+#include <string>
+#include <iomainp>
 
 using namespace std;
 
-int main(int argc, const char * argv[]) {
-    int a[8];
-    for (int i=0; i<8; i++)
-    {
-        cin>>a[i];
-    }
+class DF
+{
+private:
+    int avg;
+    string number,name,college;
+public:
+    void average();
+    void cout();
+};
 
-    for(int i=0; i<8; i++)
+void DF::average()
+{
+    char b[999];
+    int a[8];
+    ifstream A("/Users/s20181105882ASN/Desktop/裁判打分.txt");
+    ofstream C("/Users/s20181105882ASN/Desktop/A.txt");
+    if(A.is_open())
     {
         int x;
-        for(int j=0; j<7-i; j++)
+        int sum=0;
+        A.getline(b,999);
+        C<<b<<endl;
+        for(int i=0; i<7; i++)
         {
-            if(a[j]>a[j+1])
+            A>>a[i];
+        }
+        for(int i=0; i<7; i++)
+        {
+            C<<a[i]<<" ";
+        }
+        
+        for(int i=0; i<7; i++)
+        {
+            for(int j=0; j<6-i; j++)
             {
-                x=a[j];
-                a[j]=a[j+1];
-                a[j+1]=x;
+                if(a[j]>a[j+1])
+                {
+                    x=a[j];
+                    a[j]=a[j+1];
+                    a[j+1]=x;
+                }
             }
         }
+
+        for(int i=1; i<6; i++)
+        {
+            sum +=a[i];
+        }
+        avg=sum/5;
+        C<<avg<<endl;
     }
-    int s=0;
-    int avg;
-    for(int i=1; i<7; i++)
+}
+
+void DF::cout()
+{
+    ofstream C("/Users/s20181105882ASN/Desktop/A.txt");
+    ifstream B("/Users/s20181105882ASN/Desktop/选手信息.txt");
+    char c[999];
+    if(B.is_open())
     {
-        s+=a[i];
-        cout<<a[i]<<endl;
+        C<<"OK"<<endl;
+        B.getline(c,999);
+        C<<c<<endl;
     }
-    avg=s/6;
-    cout<<avg<<endl;
+}
+int main(int argc, const char * argv[]) {
+    DF m;
+    m.cout();
+    m.average();
     return 0;
 }
