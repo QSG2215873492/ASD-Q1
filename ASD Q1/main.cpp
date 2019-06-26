@@ -2,11 +2,10 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-#include <iomanip>
 
 using namespace std;
 
-ifstream stu("Users/s20181105882ASN/Desktop/选手信息.txt");
+ifstream stu("/Users/s20181105882ASN/Desktop/选手信息.txt");
 ifstream jud("/Users/s20181105882ASN/Desktop/裁判打分.txt");
 ofstream gra("/Users/s20181105882ASN/Desktop/grade.txt");
 
@@ -14,53 +13,60 @@ class DF
 {
 private:
     double grade[7]={0};
+    
     string number,name,college,judge[7];
 public:
     double average;
     DF(string num,string nam,string col);
-    void cout();
+    void play()
+    {
+        gra<<number<<"  "<<name<<"  "<<college<<endl;
+        for(int i=0;i<7;i++)
+        {
+            gra<<judge[i]<<" "<<grade[i];
+            if(i!=6)
+                gra<<" ";
+            
+        }
+        gra<<endl;
+        gra<<"average="<<average<<endl;
+    }
 };
-
 DF::DF(string num,string nam,string col):number(num),name(nam),college(col)
 {
     double sum=0;
-    for(int i=0; i<7;i++)
+    for(int i=0;i<7;i++)
     {
         jud>>judge[i];
         jud>>grade[i];
-        for(int i=0;i<7;i++)
+        
+    }
+    for(int i=0;i<6;i++)
+    {
+        for(int j=0;j<6-i;j++)
         {
-            for(int k=0;k<6-i;k++)
+            if(grade[j]>grade[j+1])
             {
-                if(grade[k]>grade[k+1])
-                {
-                    double s=grade[k];
-                    grade[k]=grade[k+1];
-                    grade[k+1]=s;
-                }
+                double m=grade[j];
+                grade[j]=grade[j+1];
+                grade[j+1]=m;
             }
         }
-        for(i=1;i<6;i++)
-        {
-            sum+=grade[i];
-        }
-        average=sum/5.0;
     }
-}
-
-void DF::cout()
-{
-    gra<<number <<"  "<<name <<"  "<<college<<endl;
     for(int i=0;i<7;i++)
+        cout<<grade[i]<<" ";
+    cout<<endl;
+    for(int i=1;i<6;i++)
     {
-        gra<<judge[i]<<"  "<<grade[i]<<"  ";
+        sum+=grade[i];
     }
-    gra<<"average="<<average<<endl;
+    average=sum/5.0;
+    
 }
-
-int main(int argc, const char * argv[]) {
+int main()
+{
+    string name,number,college;
     DF *avg[8];
-    string number,name,college;
     for(int i=0;i<8;i++)
     {
         stu>>number>>name>>college;
@@ -70,17 +76,21 @@ int main(int argc, const char * argv[]) {
     {
         for(int j=0;j<7-i;j++)
         {
-            if(avg[j]>avg[j+1])
+            if(avg[j]->average<avg[j+1]->average)
             {
-                DF *k= avg[j];
-                avg[j]= avg[j+1];
-                avg[j+1]=k;
+                DF *t=avg[j+1];
+                avg[j+1]=avg[j];
+                avg[j]=t;
             }
         }
     }
     for(int i=0;i<8;i++)
     {
-        avg[i]->cout();
+        cout<<avg[i]->average<<" ";
+    }
+    for(int m=0;m<8;m++)
+    {
+        avg[m]->play();
     }
     return 0;
 }
